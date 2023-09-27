@@ -1,0 +1,38 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pr:
+ branches:
+    include:
+      - master
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - group: cb-secret
+
+stages:
+  - stage: Test
+    jobs:
+      - job: Codebeamer
+        displayName: "Codebeamer upload"
+        steps:
+          - script: echo Hello, world!
+            displayName: 'Echo test'
+          - task: codeBeamer@1
+            inputs:
+              test_xml_folder: '.'
+              test_run_name: '$(Build.DefinitionName) $(Build.Reason)'
+              test_run_id: '$(Build.BuildId)'
+              server_url: 'https://rb-cb-01-d3.dev.bosch.com/'
+              cb_user: '$(cb_user)'
+              cb_password: '$(cb_password)'
+              test_configuration_id: '1317'
+              test_case_tracker_id: '6618'
+              test_run_tracker_id: '6627'
